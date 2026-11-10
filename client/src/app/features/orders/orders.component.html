@@ -1,0 +1,111 @@
+<section 
+  class="orders-container" 
+  aria-labelledby="orders-title"
+  role="region"
+  aria-label="Panel de visualización de órdenes"
+>
+  <header class="orders-header">
+    <div class="orders-header__content">
+      <h1 id="orders-title" class="orders-header__title">
+        <mat-icon class="orders-header__icon" aria-hidden="true">shopping_cart</mat-icon>
+        Órdenes en Tiempo Real
+      </h1>
+      <p class="orders-header__subtitle">
+        Visualiza y gestiona las órdenes de tu plataforma de comercio electrónico
+      </p>
+    </div>
+    <div class="orders-header__actions">
+      <button 
+        mat-raised-button 
+        color="primary"
+        (click)="refreshOrders()"
+        class="orders-header__refresh"
+        aria-label="Actualizar lista de órdenes"
+      >
+        <mat-icon aria-hidden="true">refresh</mat-icon>
+        Actualizar
+      </button>
+    </div>
+  </header>
+
+  <div 
+    *ngIf="error() as errorMessage" 
+    class="orders-error"
+    role="alert"
+    aria-live="assertive"
+  >
+    <mat-icon aria-hidden="true">error_outline</mat-icon>
+    <span class="orders-error__message">{{ errorMessage }}</span>
+    <button 
+      mat-button 
+      color="warn"
+      (click)="clearError()"
+      class="orders-error__dismiss"
+      aria-label="Descartar error"
+    >
+      Descartar
+    </button>
+  </div>
+
+  <div 
+    *ngIf="loading()" 
+    class="orders-loading"
+    role="status"
+    aria-live="polite"
+    aria-label="Cargando órdenes"
+  >
+    <mat-spinner diameter="48" aria-hidden="true"></mat-spinner>
+    <span class="orders-loading__text">Cargando órdenes...</span>
+  </div>
+
+  <main 
+    *ngIf="!loading()" 
+    class="orders-content"
+    aria-label="Lista de órdenes"
+  >
+    <div 
+      *ngIf="orders().length === 0" 
+      class="orders-empty"
+      role="status"
+      aria-live="polite"
+    >
+      <mat-icon class="orders-empty__icon" aria-hidden="true">inbox</mat-icon>
+      <p class="orders-empty__text">No hay órdenes disponibles</p>
+      <p class="orders-empty__hint">Las órdenes aparecerán aquí cuando se creen</p>
+    </div>
+
+    <ul 
+      *ngIf="orders().length > 0" 
+      class="orders-list"
+      role="list"
+      aria-label="Listado de órdenes"
+    >
+      <li 
+        *ngFor="let order of orders(); trackBy: trackByOrderId" 
+        class="orders-list__item"
+        [attr.id]="'order-' + order.id"
+      >
+        <app-order-card 
+          [order]="order"
+          class="orders-list__card"
+        ></app-order-card>
+      </li>
+    </ul>
+  </main>
+
+  <footer class="orders-footer">
+    <div class="orders-footer__stats" aria-label="Estadísticas de órdenes">
+      <span class="orders-footer__count">
+        <strong>{{ orders().length }}</strong> órdenes
+      </span>
+      <span class="orders-footer__divider" aria-hidden="true">|</span>
+      <span class="orders-footer__status">
+        <span 
+          class="orders-footer__indicator orders-footer__indicator--active" 
+          aria-hidden="true"
+        ></span>
+        Conexión activa
+      </span>
+    </div>
+  </footer>
+</section>
